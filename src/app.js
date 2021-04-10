@@ -11,7 +11,7 @@ const app = express();
     next();
 };*/
 
-//Create a middleware function that responds to any server request by saying "Hello"!
+//Create a middleware function that responds to the hello route request by saying "Hello"!, and responds with the query paramater "name" when there is a name in query
 const sayHello = (req, res) => {
     console.log(req.query);
     const name = req.query.name;
@@ -19,8 +19,17 @@ const sayHello = (req, res) => {
     res.send(content);
 };
 
+//Create a middleware function that responds to the Greeting route parameter
+const saySomething = (req, res) => {
+    const greeting = req.params.greeting;
+    const content = `${greeting}!`;
+    res.send(content);
+}
 //Use the sayHello middleware function
 //app.use(sayHello);
+
+//Use the saySomething function at route with params
+app.get("/say/:greeting", saySomething);
 
 //Switch the sayHello function to be invoked at a specific route
 app.get("/hello", sayHello);
