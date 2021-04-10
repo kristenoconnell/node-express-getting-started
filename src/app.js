@@ -34,6 +34,15 @@ const sayGoodbye = (req, res) => {
     res.send("Sorry to see you go!");
 }
 
+//Router-level middleware check
+const checkAbbreviationLength = (req, res, next) => {
+    const abbreviation = req.params.abbreviation;
+    if (abbreviation.length !== 2) {
+        next(`State abbreviation ${abbreviation} is invalid.`);
+    } else {
+        next();
+    }
+}
 
 //Switch the sayHello function to be invoked at a specific route
 app.get("/hello", sayHello);
@@ -43,6 +52,39 @@ app.get("/say/goodbye", sayGoodbye);
 
 //Use the saySomething function at route with params
 app.get("/say/:greeting", saySomething);
+
+
+//ABBREVIATIONS
+//Abbreviation handler
+app.get(
+    "/states/:abbreviation", 
+    checkAbbreviationLength,
+    (req, res, next) => {
+    const abbreviation = req.params.abbreviation;
+    
+    res.send(`${abbreviation} is a nice state. I would love to visit!`);
+    });
+
+//Travel abbreviation
+app.get(
+    "/travel/:abbreviation", 
+    checkAbbreviationLength,
+    (req, res, next) => {
+    const abbreviation = req.params.abbreviation;
+    
+        res.send(`Enjoy your trip to ${abbreviation}!`)
+    });
+
+//Not-found middleware handler
+app.use((req, res, next) => {
+    res.send(`Sorry! The route ${req.path} does not exist!`);
+});
+
+//Error handler
+app.use((error, req, res, next) => {
+    console.error(error);
+    res.send(error);
+})
 
 
 //ORIGINAL USE CALLS
