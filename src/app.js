@@ -1,6 +1,7 @@
 //import Express as a framework
 const express = require("express");
 const morgan = require("morgan");
+
 //Express exports a function
 //Assign this function to a variable for use throughout the project
 const app = express();
@@ -11,7 +12,7 @@ const app = express();
     next();
 };*/
 
-//Create a middleware function that responds to the hello route request by saying "Hello"!, and responds with the query paramater "name" when there is a name in query
+//Create a middleware function that responds to the hello route request and a query parameter
 const sayHello = (req, res) => {
     console.log(req.query);
     const name = req.query.name;
@@ -19,20 +20,35 @@ const sayHello = (req, res) => {
     res.send(content);
 };
 
-//Create a middleware function that responds to the Greeting route parameter
+//Create a middleware function that responds to the :greeting route parameter
 const saySomething = (req, res) => {
     const greeting = req.params.greeting;
-    const content = `${greeting}!`;
+    const name = req.query.name;
+
+    const content = greeting && name ? `${greeting},  ${name}!` : `${greeting}`;
     res.send(content);
 }
-//Use the sayHello middleware function
-//app.use(sayHello);
+
+//Create a middleware function to say goodbye, no params
+const sayGoodbye = (req, res) => {
+    res.send("Sorry to see you go!");
+}
+
+
+//Switch the sayHello function to be invoked at a specific route
+app.get("/hello", sayHello);
+
+//Place the goodbye invocation before the parameter invocation to avoid matching the route parameter
+app.get("/say/goodbye", sayGoodbye);
 
 //Use the saySomething function at route with params
 app.get("/say/:greeting", saySomething);
 
-//Switch the sayHello function to be invoked at a specific route
-app.get("/hello", sayHello);
+
+//ORIGINAL USE CALLS
+
+//Use the sayHello middleware function
+//app.use(sayHello);
 
 //Use the logging middleware function, which will not be used unless the sayHello has a next();
 //app.use(logging);
