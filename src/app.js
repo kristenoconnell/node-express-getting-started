@@ -38,7 +38,7 @@ const sayGoodbye = (req, res) => {
 const checkAbbreviationLength = (req, res, next) => {
     const abbreviation = req.params.abbreviation;
     if (abbreviation.length !== 2) {
-        next(`State abbreviation ${abbreviation} is invalid.`);
+        next(`State abbreviation ${abbreviation} is invalid.` );
     } else {
         next();
     }
